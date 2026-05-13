@@ -26,7 +26,7 @@ class VKPoster:
         return data.get("response")
 
     def _upload_image(self, image_url):
-        img_resp = requests.get(image_url, timeout=10)
+        img_resp = requests.get(image_url, timeout=15)
         img_resp.raise_for_status()
         img_data = img_resp.content
 
@@ -53,8 +53,9 @@ class VKPoster:
             try:
                 photo = self._upload_image(article["image_url"])
                 if photo:
-                    att = f"photo{photo['owner_id']}_{photo['id']}"
-                    attachments.append(att)
+                    attachments.append(
+                        f"photo{photo['owner_id']}_{photo['id']}"
+                    )
             except Exception as e:
                 print(f"  Image upload failed: {e}")
 
@@ -68,26 +69,30 @@ class VKPoster:
 
     def _build_text(self, article):
         title = f"\U0001f3ae {article['title']}"
-        desc = article['description']
+        desc = article["description"]
         author = f"Автор: {article['author']} | {article['site']}"
         source = f"Источник: {article['link']}"
         tags = "#игровыеновости #гейминг"
 
-        parts = [title, '', desc, '', author, source, '', tags]
-        text = '\n'.join(parts)
+        lines = [title, "", desc, "", author, source, "", tags]
+
+        if article.get("video_url"):
+            video_line = f"Видео: {article['video_url']}"
+            lines.insert(-1, video_line)
+
+        text = "\n".join(lines)
 
         if len(text) <= MAX_TEXT_LENGTH:
             return text
 
-        # Truncate description to fit
         max_desc = len(desc) - (len(text) - MAX_TEXT_LENGTH) - 3
         if max_desc < 50:
             max_desc = 50
 
         desc = desc[:max_desc]
-        space = desc.rfind(' ')
+        space = desc.rfind(" ")
         if space > 0:
             desc = desc[:space]
-        desc += '...'
-        parts[2] = desc
-        return '\n'.join(parts)
+        desc += "..."
+        lines[2] = desc
+        return "\n".join(lines)
