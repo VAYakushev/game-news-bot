@@ -1,0 +1,31 @@
+name: Post Game News
+
+on:
+  schedule:
+    - cron: '0 11,15 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:            
+  post-news:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run news bot
+        env:
+          VK_TOKEN: ${{ secrets.VK_TOKEN }}
+        run: python main.py
+      - name: Commit db.json
+        run: |
+          git config --local user.email "bot@game-news-bot"
+          git config --local user.name "Game News Bot"
+          git add db.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update db.json [skip ci]"
+          git push
