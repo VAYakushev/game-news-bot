@@ -34,6 +34,7 @@ def parse_site(site_config):
         if article["title"] and article["link"]:
             articles.append(article)
 
+    # Enrich articles: one HTTP request per article for image + desc + video
     for article in articles:
         need_image = not article["image_url"]
         need_desc = len(article["description"]) < 80
@@ -98,6 +99,7 @@ def _get_image_from_rss(entry):
 
 
 def _fetch_article_page(url):
+    """One request to get image, description, and video link."""
     if not url:
         return None, None, None
     try:
