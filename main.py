@@ -4,7 +4,7 @@ import sys
 
 import config
 from parser import parse_site
-from scorer import score_article
+from scorer import score_article, is_article_blocked
 from vk_poster import VKPoster
 
 DB_PATH = "db.json"
@@ -38,8 +38,12 @@ def main():
         print(f"{site['name']}: {len(articles)} articles")
         all_articles.extend(articles)
 
+    # Remove already published AND blocked (movies/series) articles
     new_articles = [a for a in all_articles if a["link"] not in published]
-    print(f"New articles: {len(new_articles)}")
+    before = len(new_articles)
+    new_articles = [a for a in new_articles if not is_article_blocked(a)]
+    blocked_count = before - len(new_articles)
+    print(f"New articles: {before}, blocked (movies/series): {blocked_count}")
 
     for a in new_articles:
         a["score"] = score_article(a)
