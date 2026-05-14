@@ -38,14 +38,14 @@ class VKPoster:
             return None
 
         try:
-            server = self._api("photos.getUploadServer", {
+            server = self._api("photos.getWallUploadServer", {
                 "group_id": self.group_id
             })
-            files = {"file1": ("image.jpg", img_resp.content, "image/jpeg")}
+            files = {"photo": ("image.jpg", img_resp.content, "image/jpeg")}
             upload_resp = requests.post(server["upload_url"], files=files)
             upload = upload_resp.json()
 
-            photo = self._api("photos.save", {
+            photo = self._api("photos.saveWallPhoto", {
                 "group_id": self.group_id,
                 "photo": upload["photo"],
                 "hash": upload["hash"],
