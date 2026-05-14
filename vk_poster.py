@@ -25,75 +25,23 @@ class VKPoster:
             )
         return data.get("response")
 
-    def _upload_image(self, image_url):
-        print(f"    Downloading image from {image_url[:100]}...")
-        try:
-            img_resp = requests.get(image_url, timeout=15, headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                              "AppleWebKit/537.36 (KHTML, like Gecko) "
-                              "Chrome/120.0.0.0 Safari/537.36"
-            })
-            img_resp.raise_for_status()
-        except Exception as e:
-            print(f"    Download failed: {e}")
-            return None
-
-        print(f"    Getting upload server...")
-        server = self._api("photos.getWallUploadServer", {
-            "group_id": self.group_id
-        })
-
-        files = {"photo": ("image.jpg", img_resp.content, "image/jpeg")}
-        upload_resp = requests.post(server["upload_url"], files=files)
-        upload = upload_resp.json()
-        print(f"    Upload response keys: {list(upload.keys())}")
-
-        if "photo" not in upload or "hash" not in upload:
-            print(f"    Upload response missing fields: {upload}")
-            return None
-
-        photo = self._api("photos.saveWallPhoto", {
-            "group_id": self.group_id,
-            "photo": upload["photo"],
-            "hash": upload["hash"],
-            "server": upload["server"],
-        })
-        if photo:
-            print(f"    Saved photo id={photo[0]['id']}")
-        else:
-            print(f"    saveWallPhoto returned empty")
-        return photo[0] if photo else None
-
     def post_article(self, article):
         text = self._build_text(article)
-        attachments = []
-
-        if article.get("image_url"):
-            print(f"  Image URL: {article['image_url'][:100]}")
-            try:
-                photo = self._upload_image(article["image_url"])
-                if photo:
-                    attachments.append(
-                        f"photo{photo['owner_id']}_{photo['id']}"
-                    )
-            except Exception as e:
-                print(f"  Image upload failed: {e}")
-        else:
-            print(f"  No image URL found for this article")
-
-        self._api("wall.post", {
+        params = {
             "owner_id": self.owner_id,
             "from_group": 1,
             "message": text,
-            "attachments": ",".join(attachments) if attachments else "",
-        })
+        }
+        if article.get("link"):
+            params["attachments"] = article["link"]
+        self._api("wall.post", params)
         print(f"  Posted: {article['title']}")
 
     def _build_text(self, article):
         title = f"\U0001f3ae {article['title']}"
         desc = article["description"]
         author = f"Автор: {article['author']} | {article['site']}"
-        source = f"Источник: {article['link']}"
+        source = article["link"]
         tags = "#игровыеновости #гейминг"
 
         lines = [title, "", desc, "", author, source, "", tags]
