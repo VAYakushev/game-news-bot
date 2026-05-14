@@ -25,6 +25,37 @@ class VKPoster:
             )
         return data.get("response")
 
+    def _upload_image(self, image_url):
+        try:
+            img_resp = requests.get(image_url, timeout=15, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                              "AppleWebKit/537.36 (KHTML, like Gecko) "
+                              "Chrome/120.0.0.0 Safari/537.36"
+            })
+            img_resp.raise_for_status()
+        except Exception as e:
+            print(f"    Download failed: {e}")
+            return None
+
+        try:
+            server = self._api("photos.getUploadServer", {
+                "group_id": self.group_id
+            })
+            files = {"file1": ("image.jpg", img_resp.content, "image/jpeg")}
+            upload_resp = requests.post(server["upload_url"], files=files)
+            upload = upload_resp.json()
+
+            photo = self._api("photos.save", {
+                "group_id": self.group_id,
+                "photo": upload["photo"],
+                "hash": upload["hash"],
+                "server": upload["server"],
+            })
+            return photo[0] if photo else None
+        except Exception as e:
+            print(f"    Upload failed: {e}")
+            return None
+
     def post_article(self, article):
         text = self._build_text(article)
         params = {
@@ -32,8 +63,10 @@ class VKPoster:
             "from_group": 1,
             "message": text,
         }
-        if article.get("link"):
-            params["attachments"] = article["link"]
+        if article.get("image_url"):
+            photo = self._upload_image(article["image_url"])
+            if photo:
+                params["attachments"] = f"photo{photo['owner_id']}_{photo['id']}"
         self._api("wall.post", params)
         print(f"  Posted: {article['title']}")
 
