@@ -25,36 +25,50 @@ class VKPoster:
             )
         return data.get("response")
 
-    def _upload_image(self, image_url):
-        try:
-            img_resp = requests.get(image_url, timeout=15, headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                              "AppleWebKit/537.36 (KHTML, like Gecko) "
-                              "Chrome/120.0.0.0 Safari/537.36"
-            })
-            img_resp.raise_for_status()
-        except Exception as e:
-            print(f"    Download failed: {e}")
-            return None
+    def _upload_image(self, image_url, retries=3):
+        for attempt in range(retries):
+            try:
+                img_resp = requests.get(image_url, timeout=15, headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                                  "Chrome/120.0.0.0 Safari/537.36"
+                })
+                img_resp.raise_for_status()
+            except Exception as e:
+                print(f"    Download failed (attempt {attempt+1}): {e}")
+                if attempt == retries - 1:
+                    return None
+                continue
 
-        try:
-            server = self._api("photos.getWallUploadServer", {
-                "group_id": self.group_id
-            })
-            files = {"photo": ("image.jpg", img_resp.content, "image/jpeg")}
-            upload_resp = requests.post(server["upload_url"], files=files)
-            upload = upload_resp.json()
+            try:
+                server = self._api("photos.getWallUploadServer", {
+                    "group_id": self.group_id
+                })
+                files = {"photo": ("image.jpg", img_resp.content, "image/jpeg")}
+                upload_resp = requests.post(server["upload_url"], files=files)
+                
+                # Check for empty response
+                if not upload_resp.text or not upload_resp.text.strip():
+                    print(f"    Empty response (attempt {attempt+1}), retrying...")
+                    if attempt == retries - 1:
+                        return None
+                    continue
+                    
+                upload = upload_resp.json()
 
-            photo = self._api("photos.saveWallPhoto", {
-                "group_id": self.group_id,
-                "photo": upload["photo"],
-                "hash": upload["hash"],
-                "server": upload["server"],
-            })
-            return photo[0] if photo else None
-        except Exception as e:
-            print(f"    Upload failed: {e}")
-            return None
+                photo = self._api("photos.saveWallPhoto", {
+                    "group_id": self.group_id,
+                    "photo": upload["photo"],
+                    "hash": upload["hash"],
+                    "server": upload["server"],
+                })
+                return photo[0] if photo else None
+            except Exception as e:
+                print(f"    Upload failed (attempt {attempt+1}): {e}")
+                if attempt == retries - 1:
+                    return None
+                continue
+        return None
 
     def post_article(self, article):
         text = self._build_text(article)
