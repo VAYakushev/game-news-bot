@@ -39,7 +39,16 @@ def main():
         all_articles.extend(articles)
 
     # Remove already published AND blocked (movies/series) articles
-    new_articles = [a for a in all_articles if a["link"] not in published]
+    # Also load existing titles for deduplication
+    db = load_db()
+    existing_titles = set()
+    existing_urls = set(published)
+    if "published_articles" in db:
+        for item in db["published_articles"]:
+            existing_urls.add(item.get("url", ""))
+            existing_titles.add(item.get("title", "").lower())
+    
+    new_articles = [a for a in all_articles if a["link"] not in existing_urls or a["title"].lower() not in existing_titles]
     before = len(new_articles)
     new_articles = [a for a in new_articles if not is_article_blocked(a)]
     blocked_count = before - len(new_articles)
@@ -76,8 +85,23 @@ def main():
         except Exception as e:
             print(f"  Failed: {e}")
 
-    published.update(posted)
-    save_db({"published_urls": list(published)})
+    # Save both URL and title to avoid duplicates
+    for article in top:
+        posted.append(article["link"])
+    
+    # Get existing data
+    db = load_db()
+    if "published_articles" not in db:
+        db["published_articles"] = []
+    
+    # Add new articles with URL and title
+    for article in top:
+        db["published_articles"].append({
+            "url": article["link"],
+            "title": article["title"]
+        })
+    
+    save_db({"published_urls": list(published), "published_articles": db["published_articles"]})
     print(f"Done. Posted {len(posted)} articles. DB has {len(published)} entries.")
 
 
