@@ -1,4 +1,6 @@
 import requests
+import os
+import json as json_lib
 import re
 from config import MAX_TEXT_LENGTH
 
@@ -131,3 +133,37 @@ class VKPoster:
         desc += "..."
         lines[3] = desc
         return "\n".join(lines)
+
+
+    def rewrite_with_llm(self, title, description):
+        """Rewrite description using LLM via OpenRouter API"""
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        if not api_key:
+            return description
+        
+        prompt = f"Ты редактор новостного канала про игры. Перепиши это описание новости более подробно и интересно, сохранив факты. Не используй эмодзи. Оригинал: {description}"
+        
+        try:
+            resp = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://github.com/VAYakushev/game-news-bot",
+                    "X-Title": "Game News Bot"
+                },
+                json={
+                    "model": "meta-llama/llama-3.1-8b-instruct",
+                    "messages": [
+                        {"role": "system", "content": "Ты — редактор новостного канала про игры. Пишешь тексты на русском языке."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "max_tokens": 500
+                },
+                timeout=30
+            )
+            result = resp.json()
+            return result.get("choices", [{}])[0].get("message", {}).get("content", description)
+        except Exception as e:
+            print(f"    LLM rewrite failed: {e}")
+            return description
