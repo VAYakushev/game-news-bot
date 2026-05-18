@@ -62,9 +62,13 @@ def main():
     posted = []
 
     for article in top:
-        # Rewrite description with LLM
-        print(f"  Rewriting with LLM...")
-        article["description"] = poster.rewrite_with_llm(article["title"], article.get("description", ""))
+        # Rewrite description with LLM only if long enough
+        desc = article.get("description", "")
+        if len(desc) > 100:
+            print(f"  Rewriting with LLM ({len(desc)} chars)...")
+            article["description"] = poster.rewrite_with_llm(article["title"], desc)
+        else:
+            print(f"  Skipping LLM (description too short: {len(desc)} chars)")
         
         try:
             poster.post_article(article)
