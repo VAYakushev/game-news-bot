@@ -86,12 +86,22 @@ class VKPoster:
 
     def _build_text(self, article):
         title = f"\U0001f3ae {article['title']}"
-        desc = article["description"]
+        
+        # Clean description from HTML
+        desc = article.get("description", "")
+        desc = re.sub(r"<[^>]+>", "", desc)
+        desc = re.sub(r"\s+", " ", desc).strip()
+        
+        # Add intro
+        intro = "📰 Новость из мира игр:"
+        if not desc:
+            desc = "Подробности читайте по ссылке."
+        
         author = f"Автор: {article['author']} | {article['site']}"
         source = article["link"]
         tags = "#игровыеновости #гейминг"
 
-        lines = [title, "", desc, "", author, source, "", tags]
+        lines = [title, "", intro, desc, "", author, "", source, "", tags]
 
         if article.get("video_url"):
             video_line = f"Видео: {article['video_url']}"
@@ -102,14 +112,21 @@ class VKPoster:
         if len(text) <= MAX_TEXT_LENGTH:
             return text
 
+        # Cut at sentence end for better readability
         max_desc = len(desc) - (len(text) - MAX_TEXT_LENGTH) - 3
-        if max_desc < 50:
-            max_desc = 50
+        if max_desc < 100:
+            max_desc = 100
 
         desc = desc[:max_desc]
-        space = desc.rfind(" ")
-        if space > 0:
-            desc = desc[:space]
+        for punct in [". ", "! ", "? "]:
+            last_punct = desc.rfind(punct)
+            if last_punct > max_desc * 0.7:
+                desc = desc[:last_punct + 1]
+                break
+        else:
+            space = desc.rfind(" ")
+            if space > 0:
+                desc = desc[:space]
         desc += "..."
-        lines[2] = desc
+        lines[3] = desc
         return "\n".join(lines)
