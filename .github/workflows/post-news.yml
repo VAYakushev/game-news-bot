@@ -2,7 +2,7 @@ name: Post Game News
 
 on:
   schedule:
-    - cron: '0 11,15 * * *'
+    - cron: '0 11,15,19 * * *'
   workflow_dispatch:
 
 permissions:
