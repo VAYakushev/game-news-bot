@@ -62,6 +62,10 @@ def main():
     posted = []
 
     for article in top:
+        # Rewrite description with LLM
+        print(f"  Rewriting with LLM...")
+        article["description"] = poster.rewrite_with_llm(article["title"], article.get("description", ""))
+        
         try:
             poster.post_article(article)
             posted.append(article["link"])
