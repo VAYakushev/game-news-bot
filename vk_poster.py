@@ -1,4 +1,5 @@
 import requests
+import re
 from config import MAX_TEXT_LENGTH
 
 VK_API_URL = "https://api.vk.com/method"
