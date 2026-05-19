@@ -96,7 +96,7 @@ class VKPoster:
         desc = re.sub(r"\s+", " ", desc).strip()
         
         # Add intro
-        intro = "📰 Новость из мира игр:"
+        intro = ""
         if not desc:
             desc = "Подробности читайте по ссылке."
         
@@ -104,7 +104,7 @@ class VKPoster:
         source = article["link"]
         tags = "#игровыеновости #гейминг"
 
-        lines = [title, "", intro, desc, "", author, "", source, "", tags]
+        lines = [title, "", desc, "", author, "", source, "", tags]
 
         if article.get("video_url"):
             video_line = f"Видео: {article['video_url']}"
