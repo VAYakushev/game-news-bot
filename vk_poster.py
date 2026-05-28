@@ -156,7 +156,7 @@ class VKPoster:
                     "X-Title": "Game News Bot"
                 },
                 json={
-                    "model": "mistralai/mistral-7b-instruct",
+                    "model": "google/gemma-2-9b-it",
                     "messages": [
                         {"role": "system", "content": "Write flowing paragraphs, not bullet points."},
                         {"role": "user", "content": prompt}
@@ -191,7 +191,7 @@ class VKPoster:
                     "X-Title": "Game News Bot"
                 },
                 json={
-                    "model": "mistralai/mistral-7b-instruct",
+                    "model": "google/gemma-2-9b-it",
                     "messages": [
                         {"role": "system", "content": "Ты — редактор новостного канала про игры. Пишешь тексты на русском языке."},
                         {"role": "user", "content": prompt}
