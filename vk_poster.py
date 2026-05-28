@@ -141,7 +141,17 @@ class VKPoster:
         if not api_key:
             return description
 
-        prompt = f"Rewrite this gaming news description as a coherent 3-4 sentence paragraph with transitions (also, meanwhile, in addition). Do NOT list facts separated by commas. Title: {title}. Facts: {description}. Write in Russian, no emojis."
+        prompt = f"""Convert these bullet-point facts into a flowing Russian paragraph about gaming news.
+
+Title: {title}
+Facts: {description}
+
+RULES:
+- Write 3-4 connected sentences as ONE paragraph
+- Use transitions: besides that, also, meanwhile, in addition
+- NEVER use comma-separated lists like "fact1, fact2, fact3"
+- NEVER repeat the title
+- Write in Russian, no emojis"""
 
         try:
             resp = requests.post(
@@ -153,7 +163,7 @@ class VKPoster:
                     "X-Title": "Game News Bot"
                 },
                 json={
-                    "model": "meta-llama/llama-3.1-8b-instruct",
+                    "model": "mistralai/mistral-7b-instruct",
                     "messages": [
                         {"role": "system", "content": "You are a gaming news editor. Write flowing paragraphs in Russian, not bullet points."},
                         {"role": "user", "content": prompt}
@@ -180,7 +190,7 @@ class VKPoster:
                     "X-Title": "Game News Bot"
                 },
                 json={
-                    "model": "meta-llama/llama-3.1-8b-instruct",
+                    "model": "mistralai/mistral-7b-instruct",
                     "messages": [
                         {"role": "system", "content": "Ты — редактор новостного канала про игры. Пишешь тексты на русском языке."},
                         {"role": "user", "content": prompt}
