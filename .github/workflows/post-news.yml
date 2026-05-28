@@ -26,6 +26,7 @@ jobs:
       - name: Run news bot
         env:
           VK_TOKEN: ${{ secrets.VK_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python main.py
 
       - name: Commit db.json
