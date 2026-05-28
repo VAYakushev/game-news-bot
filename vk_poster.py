@@ -161,19 +161,17 @@ class VKPoster:
                         {"role": "system", "content": "Write flowing paragraphs, not bullet points."},
                         {"role": "user", "content": prompt}
                     ],
-                    "max_tokens": 500
+                    "max_tokens": 1000
                 },
                 timeout=30
             )
             print(f"    API status: {resp.status_code}")
             result = resp.json()
             print(f"    API response keys: {list(result.keys())}")
-            print(f"    Full response: {json_lib.dumps(result, ensure_ascii=False)[:500]}")
             choices = result.get("choices", [])
             if choices and len(choices) > 0:
                 message = choices[0].get("message", {})
-                llm_text = message.get("content")
-                print(f"    Content type: {type(llm_text)}, value: {repr(llm_text)[:200]}")
+                llm_text = message.get("content") or message.get("reasoning") or ""
                 if llm_text:
                     llm_text = str(llm_text).strip()
                     print(f"    LLM response: {len(llm_text)} chars")
@@ -181,7 +179,7 @@ class VKPoster:
                     if len(llm_text) > 20:
                         return llm_text
                 else:
-                    print(f"    LLM content is None or empty")
+                    print(f"    No content or reasoning in response")
             else:
                 print(f"    No choices in response")
             return description
@@ -206,7 +204,7 @@ class VKPoster:
                         {"role": "system", "content": "Ты — редактор новостного канала про игры. Пишешь тексты на русском языке."},
                         {"role": "user", "content": prompt}
                     ],
-                    "max_tokens": 500
+                    "max_tokens": 1000
                 },
                 timeout=30
             )
