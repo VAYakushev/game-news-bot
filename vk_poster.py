@@ -161,7 +161,7 @@ class VKPoster:
                         {"role": "system", "content": "Write flowing paragraphs, not bullet points."},
                         {"role": "user", "content": prompt}
                     ],
-                    "max_tokens": 1000
+                    "max_tokens": 1500
                 },
                 timeout=30
             )
@@ -198,7 +198,7 @@ class VKPoster:
                         {"role": "system", "content": "Ты — редактор новостного канала про игры. Пишешь тексты на русском языке."},
                         {"role": "user", "content": prompt}
                     ],
-                    "max_tokens": 1000
+                    "max_tokens": 1500
                 },
                 timeout=30
             )
