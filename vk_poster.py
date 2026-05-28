@@ -174,14 +174,8 @@ class VKPoster:
                 llm_text = message.get("content") or message.get("reasoning") or ""
                 if llm_text:
                     llm_text = str(llm_text).strip()
-                    print(f"    LLM response: {len(llm_text)} chars")
-                    print(f"    LLM text: {llm_text[:200]}")
                     if len(llm_text) > 20:
                         return llm_text
-                else:
-                    print(f"    No content or reasoning in response")
-            else:
-                print(f"    No choices in response")
             return description
         except Exception as e:
             print(f"    LLM FAILED: {type(e).__name__}: {e}")
