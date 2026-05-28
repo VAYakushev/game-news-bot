@@ -140,6 +140,33 @@ class VKPoster:
         api_key = os.environ.get("OPENROUTER_API_KEY")
         if not api_key:
             return description
+
+        prompt = f"Rewrite this gaming news description as a coherent 3-4 sentence paragraph with transitions (also, meanwhile, in addition). Do NOT list facts separated by commas. Title: {title}. Facts: {description}. Write in Russian, no emojis."
+
+        try:
+            resp = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://github.com/VAYakushev/game-news-bot",
+                    "X-Title": "Game News Bot"
+                },
+                json={
+                    "model": "meta-llama/llama-3.1-8b-instruct",
+                    "messages": [
+                        {"role": "system", "content": "You are a gaming news editor. Write flowing paragraphs in Russian, not bullet points."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "max_tokens": 500
+                },
+                timeout=30
+            )
+            result = resp.json()
+            return result.get("choices", [{}])[0].get("message", {}).get("content", description)
+        except Exception as e:
+            print(f"    LLM rewrite failed: {e}")
+            return description
         
         prompt = f"""Перепиши описание новости для VK-поста. Заголовок: {title}. Описание: {description}. Напиши 3-4 предложения связным текстом с переходами (например, также, при этом, кроме того). НЕ перечисляй факты через запятую. Без эмодзи, на русском."""
         
