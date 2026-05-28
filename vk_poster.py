@@ -156,7 +156,7 @@ class VKPoster:
                     "X-Title": "Game News Bot"
                 },
                 json={
-                    "model": "google/gemma-2-9b-it",
+                    "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
                     "messages": [
                         {"role": "system", "content": "Write flowing paragraphs, not bullet points."},
                         {"role": "user", "content": prompt}
@@ -191,7 +191,7 @@ class VKPoster:
                     "X-Title": "Game News Bot"
                 },
                 json={
-                    "model": "google/gemma-2-9b-it",
+                    "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
                     "messages": [
                         {"role": "system", "content": "Ты — редактор новостного канала про игры. Пишешь тексты на русском языке."},
                         {"role": "user", "content": prompt}
