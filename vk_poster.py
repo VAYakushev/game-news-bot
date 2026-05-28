@@ -168,12 +168,19 @@ class VKPoster:
             print(f"    API status: {resp.status_code}")
             result = resp.json()
             print(f"    API response keys: {list(result.keys())}")
-            llm_text = result.get("choices", [{}])[0].get("message", {}).get("content", "")
-            print(f"    LLM response: {len(llm_text)} chars")
-            if llm_text:
-                print(f"    LLM text: {llm_text[:200]}")
-            if llm_text and len(llm_text) > 20:
-                return llm_text
+            choices = result.get("choices", [])
+            if choices and len(choices) > 0:
+                llm_text = choices[0].get("message", {}).get("content")
+                if llm_text:
+                    llm_text = str(llm_text).strip()
+                    print(f"    LLM response: {len(llm_text)} chars")
+                    print(f"    LLM text: {llm_text[:200]}")
+                    if len(llm_text) > 20:
+                        return llm_text
+                else:
+                    print(f"    LLM content is None or empty")
+            else:
+                print(f"    No choices in response")
             return description
         except Exception as e:
             print(f"    LLM FAILED: {type(e).__name__}: {e}")
