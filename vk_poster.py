@@ -168,9 +168,12 @@ class VKPoster:
             print(f"    API status: {resp.status_code}")
             result = resp.json()
             print(f"    API response keys: {list(result.keys())}")
+            print(f"    Full response: {json.dumps(result, ensure_ascii=False)[:500]}")
             choices = result.get("choices", [])
             if choices and len(choices) > 0:
-                llm_text = choices[0].get("message", {}).get("content")
+                message = choices[0].get("message", {})
+                llm_text = message.get("content")
+                print(f"    Content type: {type(llm_text)}, value: {repr(llm_text)[:200]}")
                 if llm_text:
                     llm_text = str(llm_text).strip()
                     print(f"    LLM response: {len(llm_text)} chars")
