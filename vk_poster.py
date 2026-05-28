@@ -174,9 +174,11 @@ RULES:
             )
             result = resp.json()
             llm_text = result.get("choices", [{}])[0].get("message", {}).get("content", "")
-            print(f"    LLM raw response: {llm_text[:200]}")
-            if llm_text and len(llm_text) > 50:
+            print(f"    LLM response length: {len(llm_text)} chars")
+            print(f"    LLM first 150: {llm_text[:150]}")
+            if llm_text and len(llm_text) > 30:
                 return llm_text
+            print("    LLM returned empty, using original")
             return description
         except Exception as e:
             print(f"    LLM rewrite failed: {e}")
@@ -205,9 +207,11 @@ RULES:
             )
             result = resp.json()
             llm_text = result.get("choices", [{}])[0].get("message", {}).get("content", "")
-            print(f"    LLM raw response: {llm_text[:200]}")
-            if llm_text and len(llm_text) > 50:
+            print(f"    LLM response length: {len(llm_text)} chars")
+            print(f"    LLM first 150: {llm_text[:150]}")
+            if llm_text and len(llm_text) > 30:
                 return llm_text
+            print("    LLM returned empty, using original")
             return description
         except Exception as e:
             print(f"    LLM rewrite failed: {e}")
