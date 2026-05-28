@@ -138,22 +138,15 @@ class VKPoster:
     def rewrite_with_llm(self, title, description):
         """Rewrite description using LLM via OpenRouter API"""
         api_key = os.environ.get("OPENROUTER_API_KEY")
+        print(f"    API key exists: {bool(api_key)}")
         if not api_key:
+            print("    No API key, skipping LLM")
             return description
 
-        prompt = f"""Convert these bullet-point facts into a flowing Russian paragraph about gaming news.
-
-Title: {title}
-Facts: {description}
-
-RULES:
-- Write 3-4 connected sentences as ONE paragraph
-- Use transitions: besides that, also, meanwhile, in addition
-- NEVER use comma-separated lists like "fact1, fact2, fact3"
-- NEVER repeat the title
-- Write in Russian, no emojis"""
+        prompt = f"Convert these facts into a flowing Russian paragraph about gaming news. Title: {title}. Facts: {description}. Write 3-4 connected sentences, use transitions, do NOT list facts with commas."
 
         try:
+            print(f"    Calling OpenRouter API...")
             resp = requests.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 headers={
@@ -165,23 +158,25 @@ RULES:
                 json={
                     "model": "mistralai/mistral-7b-instruct",
                     "messages": [
-                        {"role": "system", "content": "You are a gaming news editor. Write flowing paragraphs in Russian, not bullet points."},
+                        {"role": "system", "content": "Write flowing paragraphs, not bullet points."},
                         {"role": "user", "content": prompt}
                     ],
                     "max_tokens": 500
                 },
                 timeout=30
             )
+            print(f"    API status: {resp.status_code}")
             result = resp.json()
+            print(f"    API response keys: {list(result.keys())}")
             llm_text = result.get("choices", [{}])[0].get("message", {}).get("content", "")
-            print(f"    LLM response length: {len(llm_text)} chars")
-            print(f"    LLM first 150: {llm_text[:150]}")
-            if llm_text and len(llm_text) > 30:
+            print(f"    LLM response: {len(llm_text)} chars")
+            if llm_text:
+                print(f"    LLM text: {llm_text[:200]}")
+            if llm_text and len(llm_text) > 20:
                 return llm_text
-            print("    LLM returned empty, using original")
             return description
         except Exception as e:
-            print(f"    LLM rewrite failed: {e}")
+            print(f"    LLM FAILED: {type(e).__name__}: {e}")
             return description
         
         prompt = f"""Перепиши описание новости для VK-поста. Заголовок: {title}. Описание: {description}. Напиши 3-4 предложения связным текстом с переходами (например, также, при этом, кроме того). НЕ перечисляй факты через запятую. Без эмодзи, на русском."""
