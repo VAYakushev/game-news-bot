@@ -1,54 +1,54 @@
 SITES = [
     {
         "name": "StopGame",
-        "rss_url": "https://stopgame.ru/rss/news.xml",
+        "rss_url": "https://rss.stopgame.ru/rss_all.xml",
     },
     {
         "name": "DTF",
         "rss_url": "https://dtf.ru/rss",
     },
     {
-        "name": "Igromania",
-        "rss_url": "https://www.igromania.ru/rss/",
+        "name": "3DNews",
+        "rss_url": "https://3dnews.ru/news/rss/",
     },
     {
         "name": "Cybersport",
-        "rss_url": "https://www.cybersport.ru/rss/",
+        "rss_url": "https://www.cybersport.ru/rss/materials",
     },
     {
-        "name": "Kanobu",
-        "rss_url": "https://kanobu.ru/rss/",
+        "name": "PlayGround",
+        "rss_url": "https://www.playground.ru/rss/news.xml",
     },
 ]
 
 BLOCKED_KEYWORDS = [
-    "фильм", "сериал", "кино", "кинотеатр", "кинематограф", "кинопремьера",
+    "С„РёР»СЊРј", "СЃРµСЂРёР°Р»", "РєРёРЅРѕ", "РєРёРЅРѕС‚РµР°С‚СЂ", "РєРёРЅРµРјР°С‚РѕРіСЂР°С„", "РєРёРЅРѕРїСЂРµРјСЊРµСЂР°",
     "movie", "series", "tv series", "tv show", "netflix",
-    "hbo", "disney+", "kinopoisk", "кдп", "кпоп",
+    "hbo", "disney+", "kinopoisk", "РєРґРї", "РєРїРѕРї",
 ]
 
 HIGH_PRIORITY_KEYWORDS = [
-    "релиз", "вышел", "доступен", "запуск",
-    "анонс", "анонсировал", "анонсировала", "представила",
-    "скидка", "раздача", "бесплатно", "халява",
+    "СЂРµР»РёР·", "РІС‹С€РµР»", "РґРѕСЃС‚СѓРїРµРЅ", "Р·Р°РїСѓСЃРє",
+    "Р°РЅРѕРЅСЃ", "Р°РЅРѕРЅСЃРёСЂРѕРІР°Р»", "Р°РЅРѕРЅСЃРёСЂРѕРІР°Р»Р°", "РїСЂРµРґСЃС‚Р°РІРёР»Р°",
+    "СЃРєРёРґРєР°", "СЂР°Р·РґР°С‡Р°", "Р±РµСЃРїР»Р°С‚РЅРѕ", "С…Р°Р»СЏРІР°",
     "playstation", "xbox", "nintendo", "steam",
     "gta", "cyberpunk", "elden ring", "god of war",
     "the witcher", "call of duty", "battlefield",
     "starfield", "zelda", "mario", "halo",
-    "серия", "сиквел", "продолжение",
+    "СЃРµСЂРёСЏ", "СЃРёРєРІРµР»", "РїСЂРѕРґРѕР»Р¶РµРЅРёРµ",
 ]
 
 MEDIUM_PRIORITY_KEYWORDS = [
-    "трейлер", "геймплей", "gameplay",
-    "обновление", "патч", "update",
-    "дата выхода", "выйдет",
-    "киберспорт", "major", "турнир",
-    "dlc", "дополнение", "сезон",
-    "скин", "кроссовер", "коллаборация",
+    "С‚СЂРµР№Р»РµСЂ", "РіРµР№РјРїР»РµР№", "gameplay",
+    "РѕР±РЅРѕРІР»РµРЅРёРµ", "РїР°С‚С‡", "update",
+    "РґР°С‚Р° РІС‹С…РѕРґР°", "РІС‹Р№РґРµС‚",
+    "РєРёР±РµСЂСЃРїРѕСЂС‚", "major", "С‚СѓСЂРЅРёСЂ",
+    "dlc", "РґРѕРїРѕР»РЅРµРЅРёРµ", "СЃРµР·РѕРЅ",
+    "СЃРєРёРЅ", "РєСЂРѕСЃСЃРѕРІРµСЂ", "РєРѕР»Р»Р°Р±РѕСЂР°С†РёСЏ",
     "steam deck", "switch", "ps5", "xbox series",
-    "unreal engine", "движок",
-    "шутер", "rpg", "экшен", "стратегия",
-    "инди", "независимая",
+    "unreal engine", "РґРІРёР¶РѕРє",
+    "С€СѓС‚РµСЂ", "rpg", "СЌРєС€РµРЅ", "СЃС‚СЂР°С‚РµРіРёСЏ",
+    "РёРЅРґРё", "РЅРµР·Р°РІРёСЃРёРјР°СЏ",
 ]
 
 OWNER_ID = -238677682
