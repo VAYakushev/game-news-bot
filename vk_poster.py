@@ -75,10 +75,10 @@ class VKPoster:
             "Convert these facts into a flowing Russian paragraph about gaming news.\n"
             f"Title: {title}\n"
             f"Facts: {desc}\n\n"
-            "Write 3-4 connected sentences in Russian. Use transitions like "
-            "\"Рё\", \"С‚Р°РєР¶Рµ\", \"РІ С‚Рѕ РІСЂРµРјСЏ РєР°Рє\", \"СЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕ\". "
-            "Do NOT list facts with commas. Do NOT use bullet points. "
-            "Do NOT include the title in your response вЂ” it will be added separately. "
+            "Write 3-4 connected sentences in Russian. "
+            "Use natural Russian transitions between sentences. "
+            "Do NOT list facts separated by commas. Do NOT use bullet points. "
+            "Do NOT include the title in your response - it will be added separately. "
             "Output ONLY the paragraph text in Russian, nothing else."
         )
 
