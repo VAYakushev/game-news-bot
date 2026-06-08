@@ -134,14 +134,14 @@ class VKPoster:
     def _build_text(self, article):
         title = f"\U0001f3ae {article['title']}"
         desc = article["description"]
-        author = f"РђРІС‚РѕСЂ: {article['author']} | {article['site']}"
+        author = f"Автор: {article['author']} | {article['site']}"
         link = article["link"]
-        tags = "#РёРіСЂРѕРІС‹РµРЅРѕРІРѕСЃС‚Рё #РіРµР№РјРёРЅРі"
+        tags = "#игровыеновости #гейминг"
 
         lines = [title, "", desc, "", author, "", link, "", tags]
 
         if article.get("video_url"):
-            lines.append(f"Р’РёРґРµРѕ: {article['video_url']}")
+            lines.append(f"Видео: {article['video_url']}")
 
         text = "\n".join(lines)
 
