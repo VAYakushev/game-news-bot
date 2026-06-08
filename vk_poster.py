@@ -92,7 +92,7 @@ class VKPoster:
                         "Content-Type": "application/json",
                     },
                     json={
-                        "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+                        "model": "meta-llama/llama-3.1-8b-instruct:free",
                         "messages": [{"role": "user", "content": prompt}],
                         "max_tokens": 1500,
                         "temperature": 0.7,
@@ -104,7 +104,7 @@ class VKPoster:
                 choice = data["choices"][0]
                 message = choice["message"]
                 finish = choice.get("finish_reason", "")
-                content = message.get("content") or message.get("reasoning") or ""
+                content = message.get("content") or ""
                 content = content.strip()
                 if content:
                     print(f"  LLM rewrite done (finish={finish}, {len(content)} chars)")
