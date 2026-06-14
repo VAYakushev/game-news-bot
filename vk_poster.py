@@ -95,7 +95,7 @@ class VKPoster:
                     json={
                         "model": "meta-llama/llama-3.1-8b-instruct:free",
                         "messages": [{"role": "user", "content": prompt}],
-                        "max_tokens": 800,
+                        "max_tokens": 1500,
                         "temperature": 0.7,
                     },
                     timeout=30,
