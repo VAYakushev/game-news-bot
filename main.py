@@ -43,7 +43,14 @@ def main():
     before = len(new_articles)
     new_articles = [a for a in new_articles if not is_article_blocked(a)]
     blocked_count = before - len(new_articles)
-    print(f"New articles: {before}, blocked (movies/series): {blocked_count}")
+    print(f"New articles: {before}, blocked (movies/series/video): {blocked_count}")
+
+    # Skip articles without images
+    no_image = len(new_articles)
+    new_articles = [a for a in new_articles if a.get("image_url")]
+    no_image_count = no_image - len(new_articles)
+    if no_image_count:
+        print(f"Skipped {no_image_count} articles without images")
 
     for a in new_articles:
         a["score"] = score_article(a)
