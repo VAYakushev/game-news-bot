@@ -72,14 +72,15 @@ class VKPoster:
             return desc
 
         prompt = (
-            "Convert these facts into a flowing Russian paragraph about gaming news.\n"
-            f"Title: {title}\n"
-            f"Facts: {desc}\n\n"
-            "Write 3-4 connected sentences in Russian. "
-            "Use natural Russian transitions between sentences. "
-            "Do NOT list facts separated by commas. Do NOT use bullet points. "
-            "Do NOT include the title in your response - it will be added separately. "
-            "Output ONLY the paragraph text in Russian, nothing else."
+            "Ты — редактор игровых новостей. Перепиши факты из новости "
+            "связным текстом из 3-4 предложений на русском языке.\n"
+            f"Заголовок: {title}\n"
+            f"Факты: {desc}\n\n"
+            "Требования:\n"
+            "- Используй связные предложения, не перечисляй факты через запятую\n"
+            "- Не используй маркированные списки\n"
+            "- Не включай заголовок в ответ — он будет добавлен отдельно\n"
+            "- Отвечай ТОЛЬКО текстом новости на русском, без пояснений"
         )
 
         for attempt in range(3):
@@ -94,7 +95,7 @@ class VKPoster:
                     json={
                         "model": "meta-llama/llama-3.1-8b-instruct:free",
                         "messages": [{"role": "user", "content": prompt}],
-                        "max_tokens": 1500,
+                        "max_tokens": 800,
                         "temperature": 0.7,
                     },
                     timeout=30,
@@ -106,11 +107,23 @@ class VKPoster:
                 finish = choice.get("finish_reason", "")
                 content = message.get("content") or ""
                 content = content.strip()
-                if content:
-                    print(f"  LLM rewrite done (finish={finish}, {len(content)} chars)")
-                    return content
-                else:
+
+                if not content:
                     print(f"  LLM returned empty (finish={finish}), retrying...")
+                    continue
+
+                if len(content) < 50:
+                    print(f"  LLM output too short ({len(content)} chars), retrying...")
+                    continue
+
+                has_cyrillic = any("а" <= c <= "я" or "А" <= c <= "Я" for c in content)
+                if not has_cyrillic:
+                    print(f"  LLM output has no Cyrillic, retrying...")
+                    continue
+
+                print(f"  LLM rewrite done (finish={finish}, {len(content)} chars)")
+                return content
+
             except Exception as e:
                 print(f"  LLM attempt {attempt+1} failed: {e}")
 
